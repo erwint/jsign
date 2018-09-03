@@ -54,6 +54,7 @@ public class PESignerCLI {
         options = new Options();
         options.addOption(OptionBuilder.hasArg().withLongOpt(PARAM_KEYSTORE).withArgName("FILE").withDescription("The keystore file, or the SunPKCS11 configuration file").withType(File.class).create('s'));
         options.addOption(OptionBuilder.hasArg().withLongOpt(PARAM_STOREPASS).withArgName("PASSWORD").withDescription("The password to open the keystore").create());
+        options.addOption(OptionBuilder.hasArg().withLongOpt(PARAM_STOREPASS_FILE).withArgName("PASSWORD_FILE").withDescription("The file with the password to open the keystore").create());
         options.addOption(OptionBuilder.hasArg().withLongOpt(PARAM_STORETYPE).withArgName("TYPE").withDescription("The type of the keystore:\n- JKS: Java keystore (.jks files)\n- PKCS12: Standard PKCS#12 keystore (.p12 or .pfx files)\n- PKCS11: PKCS#11 hardware token\n").create());
         options.addOption(OptionBuilder.hasArg().withLongOpt(PARAM_ALIAS).withArgName("NAME").withDescription("The alias of the certificate used for signing in the keystore.").create('a'));
         options.addOption(OptionBuilder.hasArg().withLongOpt(PARAM_KEYPASS).withArgName("PASSWORD").withDescription("The password of the private key. When using a keystore, this parameter can be omitted if the keystore shares the same password.").create());
@@ -75,21 +76,23 @@ public class PESignerCLI {
 
     void execute(String... args) throws SignerException, ParseException {
         DefaultParser parser = new DefaultParser();
-        
+
         CommandLine cmd = parser.parse(options, args);
 
         if (cmd.hasOption("help") || args.length == 0) {
             printHelp();
             return;
         }
-        
+
         PESignerHelper helper = new PESignerHelper(new StdOutConsole(), "option");
-        
+
         setOption(PARAM_KEYSTORE, helper, cmd);
         setOption(PARAM_STOREPASS, helper, cmd);
+        setOption(PARAM_STOREPASS_FILE, helper, cmd);
         setOption(PARAM_STORETYPE, helper, cmd);
         setOption(PARAM_ALIAS, helper, cmd);
         setOption(PARAM_KEYPASS, helper, cmd);
+        setOption(PARAM_KEYPASS_FILE, helper, cmd);
         setOption(PARAM_KEYFILE, helper, cmd);
         setOption(PARAM_CERTFILE, helper, cmd);
         setOption(PARAM_ALG, helper, cmd);
